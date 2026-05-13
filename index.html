@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XLBBQ — Korean BBQ · Leuven</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg:        #0d0d0d;
+    --bg-alt:    #111111;
+    --card:      #1a1a1a;
+    --red:       #e8430a;
+    --red-dark:  #b33208;
+    --gold:      #f5a623;
+    --text:      #f0ece4;
+    --text-mid:  rgba(240,236,228,0.58);
+    --text-soft: rgba(240,236,228,0.3);
+    --border:    rgba(240,236,228,0.07);
+    --red-glow:  rgba(232,67,10,0.16);
+    --font-bbq:  'Bebas Neue', Impact, sans-serif;
+    --font-serif:'Playfair Display', Georgia, serif;
+    --font-sans: 'DM Sans', system-ui, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── UTILITIES ──────────────────────────────────────── */
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 18px;
+  }
+  .section-tag::before {
+    content: '';
+    width: 26px;
+    height: 1.5px;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+  .section-tag.centered {
+    display: flex;
+    justify-content: center;
+  }
+  .section-tag.centered::after {
+    content: '';
+    width: 26px;
+    height: 1.5px;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+
+  .fade-up {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+  .fade-up.d1 { transition-delay: 0.1s; }
+  .fade-up.d2 { transition-delay: 0.22s; }
+  .fade-up.d3 { transition-delay: 0.34s; }
+  .fade-up.d4 { transition-delay: 0.46s; }
+
+  /* ── NAVBAR ─────────────────────────────────────────── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: var(--bg);
+    height: 64px;
+    padding: 0 5vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    gap: 3px;
+  }
+  .nav-logo-name {
+    font-family: var(--font-bbq);
+    font-size: 30px;
+    letter-spacing: 0.06em;
+    color: var(--red);
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(232,67,10,0.4);
+  }
+  .nav-logo-sub {
+    font-size: 9px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    font-weight: 400;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 34px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 12.5px;
+    font-weight: 400;
+    letter-spacing: 0.07em;
+    color: var(--text-mid);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+
+  /* Lang toggle */
+  .lang-toggle {
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(232,67,10,0.35);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .lang-btn {
+    padding: 5px 9px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-soft);
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    transition: background 0.18s, color 0.18s;
+    line-height: 1;
+  }
+  .lang-btn:hover { color: var(--text); }
+  .lang-btn.active { background: var(--red); color: #fff; }
+  .lang-sep {
+    width: 1px;
+    height: 14px;
+    background: rgba(232,67,10,0.35);
+    flex-shrink: 0;
+  }
+
+  .btn-red {
+    display: inline-block;
+    padding: 10px 20px;
+    background: var(--red);
+    color: white;
+    font-family: var(--font-sans);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.22s, transform 0.18s;
+  }
+  .btn-red:hover { background: var(--red-dark); transform: translateY(-1px); }
+
+  /* Hamburger */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 4px;
+    background: none;
+    border: none;
+  }
+  .hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Mobile menu */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(13,13,13,0.98);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 38px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: var(--font-bbq);
+    font-size: 52px;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--red); }
+  .mobile-menu .btn-red {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    padding: 14px 50px;
+  }
+  .mobile-lang {
+    display: flex;
+    border: 1px solid rgba(232,67,10,0.35);
+    overflow: hidden;
+  }
+  .mobile-lang .lang-btn { font-size: 13px; padding: 9px 22px; }
+
+  /* ── HERO ────────────────────────────────────────────── */
+  #hero {
+    position: relative;
+    height: 100vh;
+    min-height: 660px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1590301157890-4810ed352733?w=1600');
+    background-size: cover;
+    background-position: center;
+    filter: saturate(0.55) brightness(0.45);
+    transform: scale(1.05);
+    transition: transform 2s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  .hero-bg.loaded { transform: scale(1); }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(13,13,13,0.55) 0%,
+      rgba(13,13,13,0.25) 35%,
+      rgba(13,13,13,0.6) 75%,
+      rgba(13,13,13,0.92) 100%
+    );
+  }
+
+  .hero-glow {
+    position: absolute;
+    bottom: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    height: 380px;
+    background: radial-gradient(ellipse at center bottom, rgba(232,67,10,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Embers */
+  #hero-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .ember {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: emberRise linear infinite;
+    opacity: 0;
+  }
+  @keyframes emberRise {
+    0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+    7%   { opacity: 1; }
+    50%  { opacity: 0.55; }
+    90%  { opacity: 0.08; }
+    100% { transform: translateY(-95vh) translateX(var(--dx,30px)) scale(0.05); opacity: 0; }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 5vw;
+    max-width: 960px;
+    width: 100%;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 20px;
+    background: rgba(232,67,10,0.14);
+    border: 1px solid rgba(232,67,10,0.42);
+    border-radius: 50px;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+  }
+
+  .hero-h1 {
+    font-family: var(--font-bbq);
+    font-size: clamp(90px, 22vw, 240px);
+    line-height: 0.86;
+    color: var(--red);
+    letter-spacing: 0.04em;
+    margin-bottom: 18px;
+    text-shadow:
+      0 0 60px rgba(232,67,10,0.6),
+      0 0 140px rgba(232,67,10,0.25);
+  }
+
+  .hero-sub {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(16px, 2.4vw, 26px);
+    color: rgba(240,236,228,0.7);
+    margin-bottom: 40px;
+    font-weight: 400;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 38px;
+  }
+
+  .btn-hero-red {
+    display: inline-block;
+    padding: 14px 38px;
+    background: var(--red);
+    color: white;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 2px solid var(--red);
+    transition: background 0.22s, transform 0.18s;
+  }
+  .btn-hero-red:hover { background: var(--red-dark); border-color: var(--red-dark); transform: translateY(-2px); }
+
+  .btn-hero-outline {
+    display: inline-block;
+    padding: 14px 38px;
+    background: transparent;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 2px solid rgba(240,236,228,0.28);
+    transition: border-color 0.22s, color 0.22s, transform 0.18s;
+  }
+  .btn-hero-outline:hover { border-color: var(--red); color: var(--red); transform: translateY(-2px); }
+
+  .hero-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 12px;
+    color: var(--text-soft);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4caf75;
+    flex-shrink: 0;
+    animation: pulse 2.2s ease infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(76,175,117,0.55); }
+    50%       { box-shadow: 0 0 0 6px rgba(76,175,117,0); }
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    opacity: 0.28;
+    animation: scrollBounce 2s ease infinite;
+  }
+  @keyframes scrollBounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%       { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ── HOW IT WORKS ────────────────────────────────────── */
+  #how-it-works {
+    background: var(--bg-alt);
+    padding: 110px 5vw;
+    border-top: 1px solid var(--border);
+  }
+
+  .hiw-header {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 72px;
+  }
+
+  .section-heading {
+    font-family: var(--font-bbq);
+    font-size: clamp(38px, 5.5vw, 72px);
+    letter-spacing: 0.04em;
+    color: var(--text);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .hiw-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .hiw-step {
+    padding: 40px 30px 44px;
+    position: relative;
+    border-right: 1px solid var(--border);
+    transition: background 0.28s;
+    overflow: hidden;
+  }
+  .hiw-step:last-child { border-right: none; }
+  .hiw-step:hover { background: rgba(232,67,10,0.04); }
+
+  .hiw-num {
+    font-family: var(--font-bbq);
+    font-size: 96px;
+    line-height: 1;
+    color: var(--red);
+    opacity: 0.1;
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    letter-spacing: 0;
+    pointer-events: none;
+    transition: opacity 0.28s;
+  }
+  .hiw-step:hover .hiw-num { opacity: 0.18; }
+
+  .hiw-icon {
+    font-size: 34px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .hiw-step-title {
+    font-family: var(--font-bbq);
+    font-size: 22px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .hiw-step-desc {
+    font-size: 13.5px;
+    color: var(--text-mid);
+    line-height: 1.7;
+  }
+
+  /* ── MENU ────────────────────────────────────────────── */
+  #menu {
+    background: var(--bg);
+    padding: 110px 5vw;
+    border-top: 1px solid var(--border);
+  }
+
+  .menu-header {
+    text-align: center;
+    max-width: 580px;
+    margin: 0 auto 66px;
+  }
+
+  .menu-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 1080px;
+    margin: 0 auto 50px;
+  }
+
+  .menu-card {
+    background: var(--card);
+    padding: 46px 36px;
+    border-top: 3px solid transparent;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.28s;
+  }
+  .menu-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(232,67,10,0.05) 0%, transparent 55%);
+    opacity: 0;
+    transition: opacity 0.28s;
+  }
+  .menu-card:hover { border-top-color: var(--red); }
+  .menu-card:hover::after { opacity: 1; }
+
+  .menu-card-icon { font-size: 42px; margin-bottom: 20px; display: block; position: relative; z-index: 1; }
+
+  .menu-card-name {
+    font-family: var(--font-bbq);
+    font-size: 30px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 14px;
+    position: relative; z-index: 1;
+  }
+
+  .menu-card-desc {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--text-mid);
+    line-height: 1.7;
+    margin-bottom: 22px;
+    position: relative; z-index: 1;
+  }
+
+  .menu-card-price {
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    position: relative; z-index: 1;
+  }
+
+  .menu-cta { text-align: center; }
+
+  /* ── EXPERIENCE ──────────────────────────────────────── */
+  #experience {
+    background: var(--bg-alt);
+    padding: 110px 5vw;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .exp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 84px;
+    align-items: center;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .exp-heading {
+    font-family: var(--font-bbq);
+    font-size: clamp(40px, 6vw, 80px);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  .exp-heading .accent { color: var(--red); }
+
+  .exp-body p {
+    font-size: 15px;
+    color: var(--text-mid);
+    line-height: 1.85;
+    margin-bottom: 16px;
+  }
+
+  .exp-stats {
+    display: flex;
+    margin-top: 40px;
+    border: 1px solid var(--border);
+  }
+  .exp-stat {
+    flex: 1;
+    padding: 22px 16px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .exp-stat:last-child { border-right: none; }
+  .exp-stat-val {
+    font-family: var(--font-bbq);
+    font-size: 34px;
+    letter-spacing: 0.04em;
+    color: var(--red);
+    display: block;
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+  .exp-stat-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+  }
+
+  .exp-img-wrap {
+    position: relative;
+    padding-bottom: 16px;
+    padding-right: 16px;
+  }
+  .exp-img {
+    width: 100%;
+    aspect-ratio: 4/5;
+    object-fit: cover;
+    display: block;
+    filter: saturate(0.8);
+  }
+  .exp-img-frame {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: calc(100% - 14px);
+    height: calc(100% - 14px);
+    border: 2px solid var(--red);
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* ── REVIEWS ─────────────────────────────────────────── */
+  #reviews {
+    background: var(--bg);
+    padding: 110px 5vw;
+  }
+
+  .reviews-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 66px;
+  }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 1080px;
+    margin: 0 auto 48px;
+  }
+
+  .review-card {
+    background: var(--card);
+    padding: 34px 30px;
+    border-top: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    transition: border-top-color 0.28s;
+  }
+  .review-card:hover { border-top-color: var(--red); }
+
+  .review-stars { display: flex; gap: 3px; margin-bottom: 18px; }
+  .review-stars i { color: var(--red); font-size: 12px; }
+  .review-stars i.half { color: var(--gold); }
+
+  .review-text {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 15.5px;
+    color: var(--text);
+    line-height: 1.7;
+    flex: 1;
+    margin-bottom: 24px;
+  }
+
+  .review-source {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .review-dot {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+    color: white; flex-shrink: 0;
+  }
+  .dot-g  { background: #4285f4; }
+  .dot-ta { background: #00af87; }
+
+  .review-meta strong { display: block; font-size: 12.5px; font-weight: 500; color: var(--text-mid); }
+  .review-meta span   { font-size: 11px; color: var(--text-soft); }
+
+  .reviews-footer {
+    text-align: center;
+    display: flex;
+    gap: 22px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-mid);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .btn-link:hover { color: var(--red); border-bottom-color: var(--red); }
+
+  /* ── CONTACT ─────────────────────────────────────────── */
+  #contact {
+    background: var(--bg-alt);
+    padding: 110px 5vw;
+    border-top: 1px solid var(--border);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 76px;
+    max-width: 1080px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  .contact-heading {
+    font-family: var(--font-bbq);
+    font-size: clamp(36px, 5vw, 64px);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 34px;
+  }
+  .contact-heading .accent { color: var(--red); }
+
+  .contact-list { list-style: none; margin-bottom: 22px; }
+  .contact-list li {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .contact-list li:first-child { border-top: 1px solid var(--border); }
+
+  .c-icon {
+    width: 34px; height: 34px;
+    background: var(--red-glow);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--red);
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .c-key {
+    font-size: 9px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--red);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .c-val {
+    font-size: 13.5px;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+  .c-val a { color: var(--text-mid); text-decoration: none; transition: color 0.2s; }
+  .c-val a:hover { color: var(--red); }
+
+  .nores-note {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-soft);
+    margin-top: 14px;
+    line-height: 1.5;
+  }
+  .nores-note i { color: var(--gold); font-size: 11px; margin-top: 3px; flex-shrink: 0; }
+
+  .map-wrap {
+    overflow: hidden;
+    height: 200px;
+    border: 1px solid var(--border);
+    margin-top: 22px;
+  }
+  .map-wrap iframe {
+    width: 100%; height: 100%;
+    border: none; display: block;
+    filter: invert(0.9) hue-rotate(180deg) saturate(0.18) brightness(0.6);
+  }
+
+  /* Form */
+  .form-heading {
+    font-family: var(--font-bbq);
+    font-size: clamp(32px, 4vw, 52px);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 30px;
+  }
+
+  .form-group { margin-bottom: 16px; }
+  .form-group label {
+    display: block;
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--red);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .f-input, .f-textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 300;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.22s, background 0.22s;
+    border-radius: 0;
+    -webkit-appearance: none;
+  }
+  .f-input::placeholder, .f-textarea::placeholder { color: var(--text-soft); }
+  .f-input:focus, .f-textarea:focus {
+    border-color: var(--red);
+    background: rgba(232,67,10,0.04);
+  }
+  .f-textarea { resize: vertical; min-height: 112px; }
+
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--red);
+    color: white;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background 0.22s, transform 0.18s;
+    margin-top: 8px;
+    border-radius: 0;
+  }
+  .btn-submit:hover { background: var(--red-dark); transform: translateY(-1px); }
+
+  .form-success {
+    display: none;
+    padding: 26px;
+    background: rgba(232,67,10,0.08);
+    border: 1px solid rgba(232,67,10,0.28);
+    text-align: center;
+    margin-top: 16px;
+  }
+  .form-success-title {
+    font-family: var(--font-bbq);
+    font-size: 32px;
+    letter-spacing: 0.06em;
+    color: var(--red);
+    margin-bottom: 6px;
+  }
+  .form-success-sub { font-size: 13px; color: var(--text-mid); }
+
+  /* ── FOOTER ──────────────────────────────────────────── */
+  footer {
+    background: var(--bg);
+    padding: 36px 5vw;
+    border-top: 1px solid var(--border);
+  }
+  .footer-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .footer-brand { text-decoration: none; }
+  .footer-name {
+    font-family: var(--font-bbq);
+    font-size: 28px;
+    letter-spacing: 0.06em;
+    color: var(--red);
+    line-height: 1;
+    text-shadow: 0 0 16px rgba(232,67,10,0.35);
+  }
+  .footer-sub {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    margin-top: 4px;
+  }
+  .footer-copy { font-size: 11.5px; color: var(--text-soft); letter-spacing: 0.04em; text-align: center; }
+  .footer-links { display: flex; gap: 18px; }
+  .footer-links a {
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: color 0.2s;
+  }
+  .footer-links a i { color: var(--red); font-size: 13px; }
+  .footer-links a:hover { color: var(--red); }
+
+  /* ── RESPONSIVE ──────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .nav-links, .nav-right .btn-red { display: none; }
+    .hamburger { display: flex; }
+
+    .hiw-steps { grid-template-columns: 1fr 1fr; }
+    .hiw-step:nth-child(2) { border-right: none; }
+    .hiw-step:nth-child(3) { border-top: 1px solid var(--border); border-right: 1px solid var(--border); }
+    .hiw-step:nth-child(4) { border-top: 1px solid var(--border); border-right: none; }
+
+    .menu-cards { grid-template-columns: 1fr; }
+    .exp-grid { grid-template-columns: 1fr; gap: 52px; }
+    .exp-img-wrap { order: -1; }
+    .reviews-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; gap: 52px; }
+
+    #how-it-works, #menu, #experience, #reviews, #contact { padding: 80px 5vw; }
+    .footer-inner { flex-direction: column; text-align: center; }
+    .footer-links { justify-content: center; }
+    .reviews-footer { flex-direction: column; align-items: center; }
+  }
+
+  @media (max-width: 480px) {
+    .hiw-steps { grid-template-columns: 1fr; }
+    .hiw-step { border-right: none !important; border-top: 1px solid var(--border); }
+    .hiw-step:first-child { border-top: none; }
+    .hero-btns { flex-direction: column; align-items: center; }
+    .exp-stats { flex-direction: column; }
+    .exp-stat { border-right: none !important; border-bottom: 1px solid var(--border); }
+    .exp-stat:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">
+    <span class="nav-logo-name">XLBBQ</span>
+    <span class="nav-logo-sub">Korean BBQ · Leuven</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#menu"        data-i18n="nav.menu">Menu</a></li>
+    <li><a href="#experience"  data-i18n="nav.experience">Ervaring</a></li>
+    <li><a href="#contact"     data-i18n="nav.contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="nl">NL</button>
+      <span class="lang-sep"></span>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <a href="#contact" class="btn-red" data-i18n="nav.cta">Reserveer</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#menu"       class="mobile-link" data-i18n="nav.menu">Menu</a>
+  <a href="#experience" class="mobile-link" data-i18n="nav.experience">Ervaring</a>
+  <a href="#contact"    class="mobile-link" data-i18n="nav.contact">Contact</a>
+  <a href="#contact" class="btn-red mobile-link" data-i18n="nav.cta">Reserveer</a>
+  <div class="mobile-lang">
+    <button class="lang-btn active" data-lang="nl">NL</button>
+    <span class="lang-sep"></span>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg" id="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-glow"></div>
+  <div id="hero-particles"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      🔥 <span data-i18n="hero.badge">#1 Korean BBQ in Leuven</span>
+    </div>
+    <h1 class="hero-h1">XLBBQ</h1>
+    <p class="hero-sub" data-i18n="hero.sub">Korean BBQ in het hart van Leuven</p>
+    <div class="hero-btns">
+      <a href="#menu"         class="btn-hero-red"     data-i18n="hero.btn1">Bekijk ons menu</a>
+      <a href="#how-it-works" class="btn-hero-outline"  data-i18n="hero.btn2">Hoe werkt het?</a>
+    </div>
+    <div class="hero-open">
+      <span class="pulse-dot"></span>
+      <span data-i18n="hero.open">Vandaag open · 12:00–15:00 &amp; 17:30–21:30</span>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <svg width="22" height="36" viewBox="0 0 22 36" fill="none">
+      <rect x="1" y="1" width="20" height="34" rx="10" stroke="#f0ece4" stroke-width="1" opacity="0.28"/>
+      <circle cx="11" cy="9" r="2.5" fill="#f0ece4" opacity="0.38">
+        <animate attributeName="cy" values="9;22;9" dur="2.1s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.38;0.08;0.38" dur="2.1s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="hiw-header fade-up">
+    <div class="section-tag centered" data-i18n="hiw.tag">Hoe werkt het?</div>
+    <h2 class="section-heading" data-i18n="hiw.heading">Hoe werkt het?</h2>
+  </div>
+  <div class="hiw-steps">
+    <div class="hiw-step fade-up">
+      <div class="hiw-num">01</div>
+      <span class="hiw-icon">🪑</span>
+      <div class="hiw-step-title" data-i18n="hiw.s1.title">Kies je tafel</div>
+      <div class="hiw-step-desc"  data-i18n="hiw.s1.sub">Elke tafel heeft een ingebouwde BBQ grill met afzuiging</div>
+    </div>
+    <div class="hiw-step fade-up d1">
+      <div class="hiw-num">02</div>
+      <span class="hiw-icon">📱</span>
+      <div class="hiw-step-title" data-i18n="hiw.s2.title">Scan &amp; bestel</div>
+      <div class="hiw-step-desc"  data-i18n="hiw.s2.sub">Bestel via QR code op je tafel, zonder ober te wachten</div>
+    </div>
+    <div class="hiw-step fade-up d2">
+      <div class="hiw-num">03</div>
+      <span class="hiw-icon">🥩</span>
+      <div class="hiw-step-title" data-i18n="hiw.s3.title">Gril zelf je vlees</div>
+      <div class="hiw-step-desc"  data-i18n="hiw.s3.sub">Vers vlees, dun gesneden, snel gaar op de ingebouwde grill</div>
+    </div>
+    <div class="hiw-step fade-up d3">
+      <div class="hiw-num">04</div>
+      <span class="hiw-icon">🍺</span>
+      <div class="hiw-step-title" data-i18n="hiw.s4.title">Geniet &amp; herhaal</div>
+      <div class="hiw-step-desc"  data-i18n="hiw.s4.sub">Soju, Koreaans bier of makgeolli rijstwijn erbij</div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <div class="menu-header fade-up">
+    <div class="section-tag centered" data-i18n="menu.tag">Onze Specialiteiten</div>
+    <h2 class="section-heading" data-i18n="menu.heading">Onze Specialiteiten</h2>
+  </div>
+  <div class="menu-cards">
+    <div class="menu-card fade-up d1">
+      <span class="menu-card-icon">🥩</span>
+      <div class="menu-card-name" data-i18n="card1.name">BBQ Sets</div>
+      <div class="menu-card-desc" data-i18n="card1.desc">Pork belly, beef bulgogi, gemarineerde sets. Mixed platter voor 4–5 personen.</div>
+      <div class="menu-card-price" data-i18n="card1.price">Vanaf €15pp</div>
+    </div>
+    <div class="menu-card fade-up d2">
+      <span class="menu-card-icon">🍜</span>
+      <div class="menu-card-name" data-i18n="card2.name">Koreaanse Classics</div>
+      <div class="menu-card-desc" data-i18n="card2.desc">Japchae, bibimbap, ttokbokki, soepen — rijst inbegrepen bij elk gerecht.</div>
+      <div class="menu-card-price" data-i18n="card2.price">Vanaf €10pp</div>
+    </div>
+    <div class="menu-card fade-up d3">
+      <span class="menu-card-icon">🍶</span>
+      <div class="menu-card-name" data-i18n="card3.name">Dranken</div>
+      <div class="menu-card-desc" data-i18n="card3.desc">Soju, Koreaans bier, makgeolli rijstwijn. Betalen met kaart of cash.</div>
+      <div class="menu-card-price" data-i18n="card3.price">Soju v.a. €8</div>
+    </div>
+  </div>
+  <div class="menu-cta fade-up">
+    <a href="#contact" class="btn-red" data-i18n="menu.cta">Boek een tafel</a>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="exp-grid">
+    <div class="fade-up">
+      <div class="section-tag" data-i18n="exp.tag">De XLBBQ Ervaring</div>
+      <h2 class="exp-heading" data-i18n="exp.heading">DE<br><span class="accent">XLBBQ</span><br>ERVARING</h2>
+      <div class="exp-body">
+        <p data-i18n="exp.p1">Geen gewoon restaurant. Bij XLBBQ gril je je eigen vlees aan tafel, omringd door vrienden.</p>
+        <p data-i18n="exp.p2">Elke tafel heeft een ingebouwde grill met afzuiging — geen geur, wel de fun van Korean BBQ. Populaire date-plek &amp; groepstafel.</p>
+      </div>
+      <div class="exp-stats">
+        <div class="exp-stat">
+          <span class="exp-stat-val">4.3★</span>
+          <span class="exp-stat-label">Google</span>
+        </div>
+        <div class="exp-stat">
+          <span class="exp-stat-val">#1</span>
+          <span class="exp-stat-label" data-i18n="stat.bbq">BBQ Leuven</span>
+        </div>
+        <div class="exp-stat">
+          <span class="exp-stat-val">2021</span>
+          <span class="exp-stat-label" data-i18n="stat.since">Sinds</span>
+        </div>
+      </div>
+    </div>
+    <div class="exp-img-wrap fade-up d2">
+      <img class="exp-img"
+           src="https://images.unsplash.com/photo-1583032015879-e5022cb87c3b?w=800"
+           alt="XLBBQ Ervaring" loading="lazy">
+      <div class="exp-img-frame"></div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="reviews-header fade-up">
+    <div class="section-tag centered" data-i18n="reviews.tag">Wat onze gasten zeggen</div>
+    <h2 class="section-heading" data-i18n="reviews.heading">Wat onze gasten zeggen</h2>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card fade-up d1">
+      <div class="review-stars">
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+      </div>
+      <p class="review-text" data-i18n="review1.text">"10/10 date, zeker een aanrader! Het eten was waanzinnig lekker."</p>
+      <div class="review-source">
+        <div class="review-dot dot-g">G</div>
+        <div class="review-meta">
+          <strong data-i18n="review1.source">Google / TikTok</strong>
+          <span>XLBBQ Leuven</span>
+        </div>
+      </div>
+    </div>
+    <div class="review-card fade-up d2">
+      <div class="review-stars">
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+      </div>
+      <p class="review-text" data-i18n="review2.text">"Finally a Korean BBQ in Leuven! The japchae are excellent, staff very friendly."</p>
+      <div class="review-source">
+        <div class="review-dot dot-ta">T</div>
+        <div class="review-meta">
+          <strong data-i18n="review2.source">TripAdvisor-bezoeker</strong>
+          <span>XLBBQ Leuven</span>
+        </div>
+      </div>
+    </div>
+    <div class="review-card fade-up d3">
+      <div class="review-stars">
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-regular fa-star"></i>
+      </div>
+      <p class="review-text" data-i18n="review3.text">"Great lunch experience. Bibimbap full of flavor, QR ordering system works perfectly."</p>
+      <div class="review-source">
+        <div class="review-dot dot-g">G</div>
+        <div class="review-meta">
+          <strong data-i18n="review3.source">Google-recensent</strong>
+          <span>XLBBQ Leuven</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="reviews-footer fade-up">
+    <a href="https://www.tripadvisor.com" target="_blank" rel="noopener" class="btn-link">
+      <span style="color:#00af87;font-weight:700">T</span>
+      <span data-i18n="rev.ta">TripAdvisor reviews</span>
+      <i class="fa-solid fa-arrow-right" style="font-size:10px"></i>
+    </a>
+    <a href="https://www.instagram.com/xlbbqleuven" target="_blank" rel="noopener" class="btn-link">
+      <i class="fa-brands fa-instagram" style="color:var(--red)"></i>
+      @xlbbqleuven
+      <i class="fa-solid fa-arrow-right" style="font-size:10px"></i>
+    </a>
+  </div>
+</section>
+
+<!-- CONTACT & HOURS -->
+<section id="contact">
+  <div class="contact-grid">
+    <!-- Left -->
+    <div class="fade-up">
+      <div class="section-tag" data-i18n="contact.tag">Contact &amp; Uren</div>
+      <h2 class="contact-heading" data-i18n="contact.heading">KOM<br>LANGS<span class="accent">.</span></h2>
+      <ul class="contact-list">
+        <li>
+          <div class="c-icon"><i class="fa-solid fa-location-dot"></i></div>
+          <div>
+            <div class="c-key" data-i18n="ck.address">Adres</div>
+            <div class="c-val">Tiensestraat 16, 3000 Leuven</div>
+          </div>
+        </li>
+        <li>
+          <div class="c-icon"><i class="fa-solid fa-phone"></i></div>
+          <div>
+            <div class="c-key" data-i18n="ck.phone">Telefoon</div>
+            <div class="c-val"><a href="tel:+3216227558">+32 16 22 75 58</a></div>
+          </div>
+        </li>
+        <li>
+          <div class="c-icon"><i class="fa-solid fa-clock"></i></div>
+          <div>
+            <div class="c-key" data-i18n="ck.hours">Openingsuren</div>
+            <div class="c-val">
+              <span style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+                <span class="pulse-dot"></span>
+                <span data-i18n="cv.mon">Ma: 17:30–21:30</span>
+              </span>
+              <span data-i18n="cv.rest">Di–Zo: 12:00–15:00 &amp; 17:30–21:30</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="nores-note">
+        <i class="fa-solid fa-circle-info"></i>
+        <span data-i18n="noreservation">Geen reservatie nodig (groepen 8+ bel ons)</span>
+      </div>
+      <div class="map-wrap">
+        <iframe
+          src="https://www.openstreetmap.org/export/embed.html?bbox=4.6990%2C50.8770%2C4.7050%2C50.8810&layer=mapnik&marker=50.8790%2C4.7020"
+          allowfullscreen loading="lazy"
+          title="XLBBQ — Tiensestraat 16, Leuven"
+        ></iframe>
+      </div>
+    </div>
+
+    <!-- Right: form -->
+    <div class="fade-up d2">
+      <div class="section-tag" data-i18n="form.tag">Stuur ons een bericht</div>
+      <h2 class="form-heading" data-i18n="form.heading">SCHRIJF<br>ONS</h2>
+      <form id="contact-form" novalidate>
+        <div class="form-group">
+          <label for="f-naam" data-i18n="fl.naam">Naam</label>
+          <input class="f-input" type="text" id="f-naam" data-i18n-ph="fp.naam" placeholder="Uw naam" required>
+        </div>
+        <div class="form-group">
+          <label for="f-email" data-i18n="fl.email">Email</label>
+          <input class="f-input" type="email" id="f-email" data-i18n-ph="fp.email" placeholder="uw@email.be" required>
+        </div>
+        <div class="form-group">
+          <label for="f-bericht" data-i18n="fl.bericht">Bericht</label>
+          <textarea class="f-textarea" id="f-bericht" data-i18n-ph="fp.bericht" placeholder="Uw bericht…" required></textarea>
+        </div>
+        <button type="submit" class="btn-submit">
+          <span data-i18n="form.submit">Verstuur</span>
+          <i class="fa-solid fa-arrow-right" style="font-size:11px"></i>
+        </button>
+      </form>
+      <div class="form-success" id="form-success">
+        <div class="form-success-title" data-i18n="success.title">Bedankt!</div>
+        <div class="form-success-sub"   data-i18n="success.sub">We antwoorden zo snel mogelijk.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <a href="#hero" class="footer-brand">
+      <div class="footer-name">XLBBQ</div>
+      <div class="footer-sub" data-i18n="footer.sub">Korean BBQ · Leuven · Since 2021</div>
+    </a>
+    <p class="footer-copy" data-i18n="footer.copy">© 2026 · Tiensestraat 16 · 3000 Leuven</p>
+    <div class="footer-links">
+      <a href="https://www.instagram.com/xlbbqleuven" target="_blank" rel="noopener">
+        <i class="fa-brands fa-instagram"></i>
+        <span data-i18n="footer.ig">Instagram</span>
+      </a>
+      <a href="https://facebook.com/koreanxlbbqleuven" target="_blank" rel="noopener">
+        <i class="fa-brands fa-facebook-f"></i>
+        <span data-i18n="footer.fb">Facebook</span>
+      </a>
+      <a href="https://www.tripadvisor.com" target="_blank" rel="noopener">
+        <i class="fa-solid fa-star"></i>
+        <span data-i18n="footer.ta">TripAdvisor</span>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Translations ────────────────────────────────────────
+const i18n = {
+  nl: {
+    'nav.menu': 'Menu', 'nav.experience': 'Ervaring', 'nav.contact': 'Contact',
+    'nav.cta': 'Reserveer',
+    'hero.badge': '#1 Korean BBQ in Leuven',
+    'hero.sub': 'Korean BBQ in het hart van Leuven',
+    'hero.btn1': 'Bekijk ons menu', 'hero.btn2': 'Hoe werkt het?',
+    'hero.open': 'Vandaag open · 12:00–15:00 &amp; 17:30–21:30',
+    'hiw.tag': 'Hoe werkt het?', 'hiw.heading': 'Hoe werkt het?',
+    'hiw.s1.title': 'Kies je tafel',
+    'hiw.s1.sub':   'Elke tafel heeft een ingebouwde BBQ grill met afzuiging',
+    'hiw.s2.title': 'Scan &amp; bestel',
+    'hiw.s2.sub':   'Bestel via QR code op je tafel, zonder ober te wachten',
+    'hiw.s3.title': 'Gril zelf je vlees',
+    'hiw.s3.sub':   'Vers vlees, dun gesneden, snel gaar op de ingebouwde grill',
+    'hiw.s4.title': 'Geniet &amp; herhaal',
+    'hiw.s4.sub':   'Soju, Koreaans bier of makgeolli rijstwijn erbij',
+    'menu.tag': 'Onze Specialiteiten', 'menu.heading': 'Onze Specialiteiten',
+    'card1.name': 'BBQ Sets',
+    'card1.desc': 'Pork belly, beef bulgogi, gemarineerde sets. Mixed platter voor 4–5 personen.',
+    'card1.price': 'Vanaf €15pp',
+    'card2.name': 'Koreaanse Classics',
+    'card2.desc': 'Japchae, bibimbap, ttokbokki, soepen — rijst inbegrepen bij elk gerecht.',
+    'card2.price': 'Vanaf €10pp',
+    'card3.name': 'Dranken',
+    'card3.desc': 'Soju, Koreaans bier, makgeolli rijstwijn. Betalen met kaart of cash.',
+    'card3.price': 'Soju v.a. €8',
+    'menu.cta': 'Boek een tafel',
+    'exp.tag': 'De XLBBQ Ervaring',
+    'exp.heading': 'DE<br><span class="accent">XLBBQ</span><br>ERVARING',
+    'exp.p1': 'Geen gewoon restaurant. Bij XLBBQ gril je je eigen vlees aan tafel, omringd door vrienden.',
+    'exp.p2': 'Elke tafel heeft een ingebouwde grill met afzuiging — geen geur, wel de fun van Korean BBQ. Populaire date-plek &amp; groepstafel.',
+    'stat.bbq': 'BBQ Leuven', 'stat.since': 'Sinds',
+    'reviews.tag': 'Wat onze gasten zeggen', 'reviews.heading': 'Wat onze gasten zeggen',
+    'review1.text': '"10/10 date, zeker een aanrader! Het eten was waanzinnig lekker."',
+    'review1.source': 'Google / TikTok',
+    'review2.text': '"Finally a Korean BBQ in Leuven! The japchae are excellent, staff very friendly."',
+    'review2.source': 'TripAdvisor-bezoeker',
+    'review3.text': '"Great lunch experience. Bibimbap full of flavor, QR ordering system works perfectly."',
+    'review3.source': 'Google-recensent',
+    'rev.ta': 'TripAdvisor reviews',
+    'contact.tag': 'Contact &amp; Uren',
+    'contact.heading': 'KOM<br>LANGS<span class="accent">.</span>',
+    'ck.address': 'Adres', 'ck.phone': 'Telefoon', 'ck.hours': 'Openingsuren',
+    'cv.mon':  'Ma: 17:30–21:30',
+    'cv.rest': 'Di–Zo: 12:00–15:00 &amp; 17:30–21:30',
+    'noreservation': 'Geen reservatie nodig (groepen 8+ bel ons)',
+    'form.tag': 'Stuur ons een bericht', 'form.heading': 'SCHRIJF<br>ONS',
+    'fl.naam': 'Naam', 'fl.email': 'Email', 'fl.bericht': 'Bericht',
+    'fp.naam': 'Uw naam', 'fp.email': 'uw@email.be', 'fp.bericht': 'Uw bericht…',
+    'form.submit': 'Verstuur',
+    'success.title': 'Bedankt!', 'success.sub': 'We antwoorden zo snel mogelijk.',
+    'footer.sub': 'Korean BBQ · Leuven · Since 2021',
+    'footer.copy': '© 2026 · Tiensestraat 16 · 3000 Leuven',
+    'footer.ig': 'Instagram', 'footer.fb': 'Facebook', 'footer.ta': 'TripAdvisor',
+  },
+  en: {
+    'nav.menu': 'Menu', 'nav.experience': 'Experience', 'nav.contact': 'Contact',
+    'nav.cta': 'Book Now',
+    'hero.badge': '#1 Korean BBQ in Leuven',
+    'hero.sub': 'Korean BBQ in the heart of Leuven',
+    'hero.btn1': 'View our menu', 'hero.btn2': 'How does it work?',
+    'hero.open': 'Open today · 12:00–15:00 &amp; 17:30–21:30',
+    'hiw.tag': 'How It Works', 'hiw.heading': 'How It Works',
+    'hiw.s1.title': 'Choose your table',
+    'hiw.s1.sub':   'Every table has a built-in BBQ grill with exhaust hood',
+    'hiw.s2.title': 'Scan &amp; order',
+    'hiw.s2.sub':   'Order via QR code on your table, no waiting for a waiter',
+    'hiw.s3.title': 'Grill your own meat',
+    'hiw.s3.sub':   'Fresh meat, thinly sliced, cooks quickly on the built-in grill',
+    'hiw.s4.title': 'Enjoy &amp; repeat',
+    'hiw.s4.sub':   'Soju, Korean beer or makgeolli rice wine to go with it',
+    'menu.tag': 'Our Specialities', 'menu.heading': 'Our Specialities',
+    'card1.name': 'BBQ Sets',
+    'card1.desc': 'Pork belly, beef bulgogi, marinated sets. Mixed platter for 4–5 people.',
+    'card1.price': 'From €15pp',
+    'card2.name': 'Korean Classics',
+    'card2.desc': 'Japchae, bibimbap, ttokbokki, soups — rice included with every dish.',
+    'card2.price': 'From €10pp',
+    'card3.name': 'Drinks',
+    'card3.desc': 'Soju, Korean beer, makgeolli rice wine. Pay by card or cash.',
+    'card3.price': 'Soju from €8',
+    'menu.cta': 'Book a table',
+    'exp.tag': 'The XLBBQ Experience',
+    'exp.heading': 'THE<br><span class="accent">XLBBQ</span><br>EXPERIENCE',
+    'exp.p1': 'Not your average restaurant. At XLBBQ you grill your own meat at the table, surrounded by friends.',
+    'exp.p2': 'Every table has a built-in grill with exhaust hood — no smell, just the fun of Korean BBQ. Popular date spot &amp; group dining.',
+    'stat.bbq': 'BBQ Leuven', 'stat.since': 'Since',
+    'reviews.tag': 'What our guests say', 'reviews.heading': 'What our guests say',
+    'review1.text': '"10/10 date, absolutely recommended! The food was insanely good."',
+    'review1.source': 'Google / TikTok',
+    'review2.text': '"Finally a Korean BBQ in Leuven! The japchae are excellent, staff very friendly."',
+    'review2.source': 'TripAdvisor visitor',
+    'review3.text': '"Great lunch experience. Bibimbap full of flavor, QR ordering system works perfectly."',
+    'review3.source': 'Google reviewer',
+    'rev.ta': 'TripAdvisor reviews',
+    'contact.tag': 'Contact &amp; Hours',
+    'contact.heading': 'COME<br>VISIT<span class="accent">.</span>',
+    'ck.address': 'Address', 'ck.phone': 'Phone', 'ck.hours': 'Opening Hours',
+    'cv.mon':  'Mon: 17:30–21:30',
+    'cv.rest': 'Tue–Sun: 12:00–15:00 &amp; 17:30–21:30',
+    'noreservation': 'No reservation needed (groups 8+ call us)',
+    'form.tag': 'Send us a message', 'form.heading': 'WRITE<br>TO US',
+    'fl.naam': 'Name', 'fl.email': 'Email', 'fl.bericht': 'Message',
+    'fp.naam': 'Your name', 'fp.email': 'your@email.com', 'fp.bericht': 'Your message…',
+    'form.submit': 'Send',
+    'success.title': 'Thanks!', 'success.sub': "We'll get back to you soon.",
+    'footer.sub': 'Korean BBQ · Leuven · Since 2021',
+    'footer.copy': '© 2026 · Tiensestraat 16 · 3000 Leuven',
+    'footer.ig': 'Instagram', 'footer.fb': 'Facebook', 'footer.ta': 'TripAdvisor',
+  }
+};
+
+let currentLang = localStorage.getItem('xlbbq-lang') || 'nl';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const v = i18n[lang][el.dataset.i18n];
+    if (v !== undefined) el.innerHTML = v;
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const v = i18n[lang][el.dataset.i18nPh];
+    if (v !== undefined) el.placeholder = v;
+  });
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+  localStorage.setItem('xlbbq-lang', lang);
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => setLang(btn.dataset.lang));
+});
+
+setLang(currentLang);
+
+// ── Hero Ken Burns ──────────────────────────────────────
+window.addEventListener('load', () => {
+  document.getElementById('hero-bg').classList.add('loaded');
+});
+
+// ── Fire / ember particles ──────────────────────────────
+(function spawnEmbers() {
+  const container = document.getElementById('hero-particles');
+  const colors = [
+    'radial-gradient(circle, #fff3b0 0%, #f5a623 40%, transparent 80%)',
+    'radial-gradient(circle, #f5a623 0%, #e8430a 50%, transparent 80%)',
+    'radial-gradient(circle, #e8430a 0%, #b33208 55%, transparent 80%)',
+    'radial-gradient(circle, #ffcc66 0%, #f5a623 45%, transparent 80%)',
+  ];
+  for (let i = 0; i < 38; i++) {
+    const el = document.createElement('div');
+    el.className = 'ember';
+    const size = Math.random() * 5 + 1.5;
+    const dx = (Math.random() - 0.5) * 180;
+    el.style.cssText = [
+      `left:${Math.random() * 100}%`,
+      `bottom:${Math.random() * 40 + 2}%`,
+      `width:${size}px`,
+      `height:${size}px`,
+      `background:${colors[Math.floor(Math.random() * colors.length)]}`,
+      `--dx:${dx}px`,
+      `animation-duration:${(Math.random() * 5 + 4).toFixed(1)}s`,
+      `animation-delay:${(Math.random() * 9).toFixed(1)}s`,
+    ].join(';');
+    container.appendChild(el);
+  }
+})();
+
+// ── Hamburger ──────────────────────────────────────────
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+hamburger.addEventListener('click', () => {
+  const open = mobileMenu.classList.toggle('open');
+  hamburger.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+document.querySelectorAll('.mobile-link').forEach(l => {
+  l.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+
+// ── IntersectionObserver fade-up ────────────────────────
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+// ── Contact form ────────────────────────────────────────
+document.getElementById('contact-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  this.style.display = 'none';
+  document.getElementById('form-success').style.display = 'block';
+});
+</script>
+</body>
+</html>
