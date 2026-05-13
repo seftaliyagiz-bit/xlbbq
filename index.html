@@ -823,7 +823,7 @@
     border: 1px solid var(--border);
     margin-top: 22px;
   }
-  .map-wrap iframe {
+  .map-wrap iframe { height: 350px; border-radius: 12px; /* updated */
     width: 100%; height: 100%;
     border: none; display: block;
     filter: invert(0.9) hue-rotate(180deg) saturate(0.18) brightness(0.6);
@@ -1271,8 +1271,8 @@
       </div>
       <div class="map-wrap">
         <iframe
-          src="https://www.openstreetmap.org/export/embed.html?bbox=4.6990%2C50.8770%2C4.7050%2C50.8810&layer=mapnik&marker=50.8790%2C4.7020"
-          allowfullscreen loading="lazy"
+          src="https://www.google.com/maps?q=Tiensestraat+16,+3000+Leuven&output=embed"
+          width="100%" height="350" style="border:0;border-radius:12px;" allowfullscreen loading="lazy"
           title="XLBBQ — Tiensestraat 16, Leuven"
         ></iframe>
       </div>
